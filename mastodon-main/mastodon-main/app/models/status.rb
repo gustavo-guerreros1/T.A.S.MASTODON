@@ -57,7 +57,30 @@ class Status < ApplicationRecord
   belongs_to :conversation, optional: true
   belongs_to :preloadable_poll, class_name: 'Poll', foreign_key: 'poll_id', optional: true, inverse_of: false
 
-  belongs_to :thread, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :replies, optional: true
+  belongs_to :thread, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :replies, optional: true , touch: true
+  
+  # Especificar el archivo de prueba y requerir las dependencias necesarias
+require 'rspec'
+require_relative 'status'
+
+# Describir el comportamiento del modelo que contiene la asociación
+RSpec.describe Status, type: :model do
+  describe 'associations' do
+    it 'belongs to a thread' do
+      association = described_class.reflect_on_association(:thread)
+      
+      expect(association).not_to be_nil
+      expect(association.macro).to eq(:belongs_to)
+      expect(association.options[:foreign_key]).to eq('in_reply_to_id')
+      expect(association.options[:class_name]).to eq('Status')
+      expect(association.options[:inverse_of]).to eq(:replies)
+      expect(association.options[:optional]).to be_truthy
+      expect(association.options[:touch]).to be_truthy
+    end
+  end
+end
+
+  
   belongs_to :reblog, foreign_key: 'reblog_of_id', class_name: 'Status', inverse_of: :reblogs, optional: true
 
   has_many :favourites, inverse_of: :status, dependent: :destroy

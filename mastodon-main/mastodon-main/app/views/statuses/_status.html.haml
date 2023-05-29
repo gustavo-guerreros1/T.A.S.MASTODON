@@ -31,7 +31,7 @@
           %bdi
             %strong.emojify= display_name(status.account, custom_emojify: true)
         = t('stream_entries.reblogged')
-  - elsif pinned
+  - elsif pinned && status.exists?
     .status__prepend
       .status__prepend-icon-wrapper
         %i.status__prepend-icon.fa.fa-fw.fa-thumb-tack
@@ -54,7 +54,7 @@
     .entry{ class: entry_classes }
       = link_to_newer short_account_status_url(status.account.username, status, since_descendant_thread_id: @max_descendant_thread_id - 1)
 
-- if include_threads && !embedded_view? && !user_signed_in?
+- if include_threads && !embedded_view? && !user_signed_in?  && status.exists?
   .entry{ class: entry_classes }
     = link_to_login class: 'load-more load-gap' do
       = fa_icon 'comments'

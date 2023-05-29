@@ -65,6 +65,7 @@ module StatusesHelper
     embedded_view? ? '_blank' : nil
   end
 
+
   def style_classes(status, is_predecessor, is_successor, include_threads)
     classes = ['entry']
     classes << 'entry-predecessor' if is_predecessor

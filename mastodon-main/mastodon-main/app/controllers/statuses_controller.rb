@@ -62,16 +62,21 @@ class StatusesController < ApplicationController
 
   def set_status
     @status = @account.statuses.find(params[:id])
-    authorize @status, :show?
-  rescue Mastodon::NotPermittedError
-    not_found
-  end
+  raise ActiveRecord::RecordNotFound, "The post does not exist" unless @status
+  authorize @status, :show?
+rescue Mastodon::NotPermittedError
+  not_found
+end
 
   def set_instance_presenter
     @instance_presenter = InstancePresenter.new
   end
 
   def redirect_to_original
-    redirect_to(ActivityPub::TagManager.instance.url_for(@status.reblog), allow_other_host: true) if @status.reblog?
+    if @status.reblog?
+      original_status = @status.reblog
+      raise ActiveRecord::RecordNotFound, "The original post does not exist" unless original_status
+      redirect_to(ActivityPub::TagManager.instance.url_for(original_status), allow_other_host: true)
+
   end
 end

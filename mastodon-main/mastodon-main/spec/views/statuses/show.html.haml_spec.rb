@@ -24,7 +24,7 @@ describe 'statuses/show.html.haml', without_verify_partial_doubles: true do
     assign(:status, status)
     assign(:account, alice)
     assign(:descendant_threads, [])
-
+    assign(:post, status)
     render
 
     header_tags = view.content_for(:header_tags)
@@ -43,6 +43,7 @@ describe 'statuses/show.html.haml', without_verify_partial_doubles: true do
     assign(:status, status)
     assign(:account, alice)
     assign(:descendant_threads, [])
+    assign(:post, status)
 
     render
 
