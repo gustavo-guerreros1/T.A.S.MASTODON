@@ -91,6 +91,7 @@ class ComposeForm extends ImmutablePureComponent {
     }
   };
 
+  // Get number characters
   getFulltextForCharacterCounting = () => {
     return [this.props.spoiler? this.props.spoilerText: '', countableText(this.props.text)].join('');
   };
@@ -264,6 +265,7 @@ class ComposeForm extends ImmutablePureComponent {
         </div>
 
         <div className={classNames('compose-form__highlightable', { active: highlighted })}>
+          {/* Main form */}
           <AutosuggestTextarea
             ref={this.setAutosuggestTextarea}
             placeholder={intl.formatMessage(messages.placeholder)}
@@ -298,6 +300,7 @@ class ComposeForm extends ImmutablePureComponent {
             </div>
 
             <div className='character-counter__wrapper'>
+              {/* Character counter */}
               <CharacterCounter max={500} text={this.getFulltextForCharacterCounting()} />
             </div>
           </div>

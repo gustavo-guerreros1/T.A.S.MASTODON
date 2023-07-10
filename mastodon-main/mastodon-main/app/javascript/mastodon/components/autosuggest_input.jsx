@@ -8,7 +8,8 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import AutosuggestAccountContainer from '../features/compose/containers/autosuggest_account_container';
 
 import AutosuggestEmoji from './autosuggest_emoji';
-import AutosuggestHashtag from './autosuggest_hashtag';
+import { AutosuggestHashtag } from './autosuggest_hashtag';
+import CharacterCounter from 'mastodon/features/compose/components/character_counter';
 
 const textAtCursorMatchesToken = (str, caretPosition, searchTokens) => {
   let word;
@@ -68,11 +69,14 @@ export default class AutosuggestInput extends ImmutablePureComponent {
     selectedSuggestion: 0,
     lastToken: null,
     tokenStart: 0,
+    characterLength : ''
   };
 
   onChange = (e) => {
+    
     const [ tokenStart, token ] = textAtCursorMatchesToken(e.target.value, e.target.selectionStart, this.props.searchTokens);
 
+    this.setState({characterLength : e.target.value})
     if (token !== null && this.state.lastToken !== token) {
       this.setState({ lastToken: token, selectedSuggestion: 0, tokenStart });
       this.props.onSuggestionsFetchRequested(token);
@@ -82,6 +86,12 @@ export default class AutosuggestInput extends ImmutablePureComponent {
     }
 
     this.props.onChange(e);
+  };
+
+
+  // Get number characters
+  getFulltextForCharacterCounting = () => {
+    return [this.state.characterLength ? this.state.characterLength: '', countableText(this.state.ca)].join('');
   };
 
   onKeyDown = (e) => {
@@ -219,6 +229,9 @@ export default class AutosuggestInput extends ImmutablePureComponent {
             spellCheck={spellCheck}
           />
         </label>
+        <div>
+          <CharacterCounter max={500} text={this.getFulltextForCharacterCounting()}/>
+        </div>
 
         <div className={`autosuggest-textarea__suggestions ${suggestionsHidden || suggestions.isEmpty() ? '' : 'autosuggest-textarea__suggestions--visible'}`}>
           {suggestions.map(this.renderSuggestion)}
